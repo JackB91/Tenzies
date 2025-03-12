@@ -5,7 +5,7 @@ import { nanoid } from "nanoid"
 import Confetti from 'react-confetti'
 
 export default function App() {
-    const [dice, setDice] = useState(generateAllNewDice())
+    const [dice, setDice] = useState(() => generateAllNewDice())  //provide function that will return initial state. react will not re run function on re-renders
 
     let gameWon =   dice.every(die => die.isHeld) && 
     dice.every(die => die.value === dice[0].value)
@@ -25,12 +25,18 @@ export default function App() {
   }
    
     function rollDice () {
+ if (!gameWon)
+        {   
     setDice(oldDice => {
     return (oldDice.map(die => {
         return !die.isHeld? 
         {...die ,value: Math.ceil(Math.random() * 6) }:die
     }) )
-})
+})}
+
+else {
+    setDice(generateAllNewDice())
+}
 
     }
 
