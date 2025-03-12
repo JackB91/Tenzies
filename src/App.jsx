@@ -16,15 +16,21 @@ export default function App() {
   }
    
     function rollDice () {
-      setDice(generateAllNewDice())
+    setDice(oldDice => {
+    return (oldDice.map(die => {
+        return !die.isHeld? 
+        {...die ,value: Math.ceil(Math.random() * 6) }:die
+    }) )
+})
+
     }
 
-    function hold(id) {
+    function hold(id) {  
         setDice(oldDice => {
             return oldDice.map(die => {
-                return die.id === id ?
-                    {...die, isHeld: !die.isHeld} :
-                    die
+                return die.id === id ? ///check that id matches the one that is clicked
+                    {...die, isHeld: !die.isHeld} : //return all previous values of die but flip is held
+                    die                             //otherwise return die
             })
         })
     }
