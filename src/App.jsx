@@ -1,4 +1,8 @@
-import { useState } from "react"
+// TODO: Go back over useEffect section!!
+
+
+
+import { useState, useRef, useEffect } from "react"
 import Die from "./Die"
 import { nanoid } from "nanoid"
 // import { useWindowSize } from 'react-use'
@@ -7,10 +11,17 @@ import Confetti from 'react-confetti'
 export default function App() {
     const [dice, setDice] = useState(() => generateAllNewDice())  //provide function that will return initial state. react will not re run function on re-renders
 
+    const buttonRef = useRef(null)
+
+
     let gameWon =   dice.every(die => die.isHeld) && 
     dice.every(die => die.value === dice[0].value)
 
-  
+    useEffect(() => {
+        if (gameWon) {
+            buttonRef.current.focus()
+        }
+    }, [gameWon])
     
 
 
@@ -63,13 +74,17 @@ else {
     return (
         <main>
             {gameWon && <Confetti />}
+            <div aria-live="polite">
+                {gameWon && <p>Congratulations! You won! Press "New Game" to start again.</p>}
+            </div>
               <h1 className="title">Tenzies</h1>
               <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
             <div className="dice-container">
                 {diceElements}
             </div>
-            <button className="roll-dice" onClick={rollDice}>{gameWon ? "New Game" : "Roll"}</button>
+            <button ref={buttonRef} className="roll-dice" onClick={rollDice}>{gameWon ? "New Game" : "Roll"}</button>
             
         </main>
     )
 }
+
